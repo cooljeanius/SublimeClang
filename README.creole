@@ -1,3 +1,10 @@
+= Plugin discontinued =
+
+** I don't intend to continue development of this plugin, so I've disabled the issues page. If something is broken, submit a pull request and I'll consider merging it. The issue history is [[https://github.com/quarnster/SublimeClang/tree/master/issues|archived]] should you want to poke in it.
+
+** Eventually SublimeClang will be replaced by https://github.com/quarnster/completion, but as I don't code much in clang supported languages these days it's not a very high priority for me personally.
+If you'd like to see it move along quicker, submit a pull request in that project and/or participate in its discussions.
+
 === Description ===
 Clang plugin for Sublime Text 2 providing auto complete suggestions for C/C++/ObjC/ObjC++. It'll also optionally parse the code as it's typed and show errors and warnings.
 
@@ -8,26 +15,36 @@ Please go [[https://github.com/quarnster/SublimeClang/issues?sort=created&direct
   # To use the clang static analyzer you need to have clang installed and in your path. The other functionality should work without having the clang binaries installed.
 
 === Additional Prerequisites (Linux Only)===
-  # [[http://sublimetext.userecho.com/topic/85126-ctypes-cant-be-imported-in-linux/|ctypes can't be imported]] in the Linux version of Sublime Text 2 right now. This can however be worked around (solution provided by [[http://www.sublimetext.com/forum/viewtopic.php?f=5&t=3958&start=10#p18782|mnus]]):
-  ## Install python2.6 via apt-get or synpactic.
-  ## Backup python26.zip in sublime2's lib directory (just for safe measure). I did mv "python26.zip backup.python26.zip"
-  ## Symlink /usr/lib/python2.6/ to sublime2's lib/python2.6 directory.
-  ## If you run into issues with this step, issue [[https://github.com/quarnster/SublimeClang/issues/35#issuecomment-3976794|#35]] contains additional notes.
-  # The Linux libclang.so is not part of the plugin by default:
-  ## [[http://www.llvm.org/releases/download.html#3.0|Download]] and compile clang.
-    *** You can probably get away with installing clang from the ubuntu repos (note that this plugin relies on features from clang 3.0) or
-    *** Downloading a binary that matches your distribution
-  ## Make sure libclang.so is in your path. Putting it in ~~/.config/sublime-text-2/Packages/SublimeClang/ should work but if that fails, /usr/lib is probably a good choice to try as an alternative. It's also been reported that "libLLVM-3.0.so" could be a dependency of libclang.so, so you might have to copy that file as well.
+  # [[http://sublimetext.userecho.com/topic/85126-ctypes-cant-be-imported-in-linux/|ctypes can't be imported]] in the Linux version of Sublime Text 2 right now. This can however be worked around easily with the help of pythonbrew:
+  ## curl -kL http://xrl.us/pythonbrewinstall | bash
+  ## source "$HOME/.pythonbrew/etc/bashrc"
+  ## pythonbrew install --configure="--enable-unicode=ucs4" 2.6
+  ## ln -s $HOME/.pythonbrew/pythons/Python-2.6/lib/python2.6/ <your Sublime Text 2 folder>/lib/python2.6
+  # If you install SublimeClang via Package Control, it seems [[http://github.com/quarnster/SublimeClang/issues/97|libcache and libclang will be deleted]] when the package is updated, so it's recommended that you manually install the plugin by using the git commands listed in the Installation section.
+  # Once SublimeClang has been installed, libcache will have to be compiled:
+  ## cd src
+  ## mkdir build
+  ## cd build
+  ## cmake ..
+  ## make
+  * Note that if a usable libclang library isn't found, it will be downloaded and built as part of the build process.
+
+If you run into any issues, please have a look at issue [[https://github.com/quarnster/SublimeClang/issues/35|#35]] for additional notes or to ask for help.
 
 === Installation ===
-    # The easiest way to install SublimeClang is via the excellent Package Control Plugin
+    # The easiest way to install SublimeClang is via the excellent Package Control Plugin. Note that SublimeClang doesn't install correctly with version v1.6.3
+    of Package Control; either use the latest testing version or (if it exists) 
+    a newer stable version of Package Control.
     ## See http://wbond.net/sublime_packages/package_control#Installation
     ### Once package control has been installed, bring up the command palette (cmd+shift+P or ctrl+shift+P)
     ### Type Install and select "Package Control: Install Package"
     ### Select SublimeClang from the list. Package Control will keep it automatically updated for you
     ## If you don't want to use package control, you can manually install it
     ### Go to your packages directory and type:
-    ####        git clone https://github.com/quarnster/SublimeClang SublimeClang
+    ####        git clone --recursive https://github.com/quarnster/SublimeClang SublimeClang
+    ####        After this you'll have to Compile libcache as described in the Additional Prerequisites (Linux Only) section
+    ### To update run the following command:
+    ####        git pull && git submodule foreach --recursive git pull origin master
     # Back in the editor, open up the command palette by pressing cmd+shift+P or ctrl+shift+P
     # Type SublimeClang and open up the settings file you want to modify with any include directories or other options you want to provide to clang.
 
@@ -50,6 +67,7 @@ There's also the following key-bindings (tweak Default.sublime-keymaps to change
       |alt+shift+d,alt+shift+e|Go to the previous error or warning in the file|
       |alt+d,alt+s|Run the Clang static analyzer on the current file|
       |alt+d,alt+o|Run the Clang static analyzer on the current project|
+      |alt+d,alt+f|Toggle whether fast (but possibly inaccurate) completions are used or not|
 
 === Show your support ===
 
@@ -88,8 +106,7 @@ And in addition to this, clang itself is using the following license:
 {{{
 University of Illinois/NCSA
 Open Source License
-
-Copyright (c) 2007-2010 University of Illinois at Urbana-Champaign.
+Copyright (c) 2003-2012 University of Illinois at Urbana-Champaign.
 All rights reserved.
 
 Developed by:
@@ -127,3 +144,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 SOFTWARE.
 }}}
+

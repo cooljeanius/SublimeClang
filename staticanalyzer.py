@@ -28,8 +28,12 @@ import sublime_plugin
 import time
 import threading
 import traceback
-import Queue
-from common import get_setting, get_cpu_count, Worker
+try:
+    import Queue
+    from internals.common import get_setting, get_cpu_count, Worker
+except:
+    import queue as Queue
+    from .internals.common import get_setting, get_cpu_count, Worker
 
 
 def parse(l):
@@ -284,7 +288,7 @@ analyzer = Analyzer()
 class ClangAnalyzeFile(sublime_plugin.TextCommand):
     def run(self, edit):
         analyzer.clear()
-        fn = self.view.file_name()
+        fn = self.view.file_name().encode("utf-8")
         analyzer.analyze_file(fn)
 
 
